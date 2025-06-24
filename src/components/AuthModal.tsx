@@ -165,26 +165,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </div>
 
         {/* Demo Credentials Info */}
-        <div className="p-6 bg-purple-50 border-b border-gray-200">
-          <h3 className="text-sm font-semibold text-purple-800 mb-2">Credenciales de Demostración:</h3>
-          <div className="text-xs text-purple-700 space-y-1">
-            <div className="flex items-center space-x-2">
-              <Shield className="h-3 w-3" />
-              <span><strong>Administrador:</strong> admin@adventureworks.com / admin123</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <CreditCard className="h-3 w-3" />
-              <span><strong>Cajera:</strong> cajera@adventureworks.com / cajera123</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <User className="h-3 w-3" />
-              <span><strong>Cliente:</strong> cliente@ejemplo.com / cliente123</span>
-            </div>
-            <div className="mt-2 text-purple-600">
-              <strong>Tip:</strong> El sistema detecta automáticamente tu rol según el email
+        {/*
+          <div className="p-6 bg-purple-50 border-b border-gray-200">
+            <h3 className="text-sm font-semibold text-purple-800 mb-2">Credenciales de Demostración:</h3>
+            <div className="text-xs text-purple-700 space-y-1">
+              <div className="flex items-center space-x-2">
+                <Shield className="h-3 w-3" />
+                <span><strong>Administrador:</strong> admin@adventureworks.com / admin123</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CreditCard className="h-3 w-3" />
+                <span><strong>Cajera:</strong> cajera@adventureworks.com / cajera123</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <User className="h-3 w-3" />
+                <span><strong>Cliente:</strong> cliente@ejemplo.com / cliente123</span>
+              </div>
+              <div className="mt-2 text-purple-600">
+                <strong>Tip:</strong> El sistema detecta automáticamente tu rol según el email
+              </div>
             </div>
           </div>
-        </div>
+        */}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">

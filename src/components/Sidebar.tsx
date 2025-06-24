@@ -158,11 +158,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <User className="h-4 w-4" />
                 <span className="text-sm">Iniciar Sesión</span>
               </button>
-              <div className="text-xs text-gray-500 px-3">
+                {/* <div className="text-xs text-gray-500 px-3">
                 <p>• Admin: admin@adventureworks.com</p>
                 <p>• Cajera: cajera@adventureworks.com</p>
-                <p>• Cliente: cliente@ejemplo.com</p>
-              </div>
+                <!---<p>• Cliente: cliente@ejemplo.com</p> --->
+                </div> */}
             </div>
           </div>
         )}
