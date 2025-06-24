@@ -224,10 +224,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 placeholder="usuario@ejemplo.com"
               />
             </div>
-            {!isLogin && (
-              <p className="text-xs text-gray-500 mt-1">
+            {!isLogin && (<></>
+              /*<p className="text-xs text-gray-500 mt-1">
                 Usa "admin" para administrador, "cajera" para cajera, o cualquier otro para cliente
-              </p>
+              </p> */
             )}
           </div>
 
