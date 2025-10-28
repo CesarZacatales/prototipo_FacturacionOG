@@ -8,8 +8,6 @@ import {
   Calendar,
   DollarSign,
   CheckCircle,
-  Clock,
-  XCircle,
   Send,
   Mail
 } from 'lucide-react';

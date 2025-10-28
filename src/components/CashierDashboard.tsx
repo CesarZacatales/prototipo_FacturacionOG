@@ -3,15 +3,12 @@ import {
   CreditCard, 
   ShoppingCart, 
   User, 
-  Mail, 
   Building, 
   Plus, 
   Minus, 
   Trash2,
-  Send,
   FileText,
   DollarSign,
-  Package
 } from 'lucide-react';
 import { Product, CartItem, User as UserType } from '../types';
 
@@ -20,7 +17,17 @@ interface CashierDashboardProps {
   onAddToCart: (product: Product, quantity: number) => void;
   cartItems: CartItem[];
   onUpdateCartQuantity: (productId: string, quantity: number) => void;
-  onProcessPayment: (paymentData: any) => void;
+  onProcessPayment: (paymentData: {
+    customerName: string;
+    customerNIT: string;
+    customerEmail: string;
+    customerDireccion: string;
+    customerTelefono: string;
+    tipoDocumento: string;
+    customerNRC?: string | null;
+    paymentMethod: 'transfer' | 'card';
+  }) => void;
+  //
   onSendInvoiceByEmail: (invoiceId: string, email: string) => void;
   user: UserType;
 }
@@ -31,17 +38,20 @@ export const CashierDashboard: React.FC<CashierDashboardProps> = ({
   cartItems,
   onUpdateCartQuantity,
   onProcessPayment,
-  onSendInvoiceByEmail,
   user
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [customerData, setCustomerData] = useState({
     name: '',
     nit: '',
-    email: ''
+    email: '',
+    tipoDocumento: 'consumidor', // nuevo campo
+    direccion: '',                // nuevo campo
+    telefono: '',                 // nuevo campo
+    nrc: ''                       // nuevo campo (solo crédito fiscal)
   });
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
-  const [showPaymentForm, setShowPaymentForm] = useState(false);
+
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,8 +63,8 @@ export const CashierDashboard: React.FC<CashierDashboardProps> = ({
   const total = subtotal + tax;
 
   const handleProcessSale = () => {
-    if (!customerData.name || !customerData.nit || !customerData.email) {
-      alert('Por favor complete todos los datos del cliente');
+    if (!customerData.name || !customerData.nit || !customerData.email || !customerData.direccion) {
+      alert('Por favor complete todos los datos del cliente requeridos');
       return;
     }
 
@@ -62,19 +72,22 @@ export const CashierDashboard: React.FC<CashierDashboardProps> = ({
       alert('El carrito está vacío');
       return;
     }
-
-    const paymentData = {
+    onProcessPayment({
       customerName: customerData.name,
       customerNIT: customerData.nit,
       customerEmail: customerData.email,
-      paymentMethod: paymentMethod === 'cash' ? 'transfer' : 'card'
-    };
-
-    onProcessPayment(paymentData);
+      customerDireccion: customerData.direccion,
+      customerTelefono: customerData.telefono,
+      tipoDocumento: customerData.tipoDocumento,
+      customerNRC: customerData.tipoDocumento === 'credito' ? customerData.nrc : null,
+      paymentMethod: paymentMethod === 'cash' ? 'transfer' : 'card',
+    });
     
-    // Clear form
-    setCustomerData({ name: '', nit: '', email: '' });
-    setShowPaymentForm(false);
+    // Limpiar formulario
+    setCustomerData({ 
+      name: '', nit: '', email: '', 
+      tipoDocumento: 'consumidor', direccion: '', telefono: '', nrc: '' 
+    });
   };
 
   return (
@@ -207,6 +220,22 @@ export const CashierDashboard: React.FC<CashierDashboardProps> = ({
             </h3>
             
             <div className="space-y-4">
+              {/* Tipo de Documento */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo de Documento *
+                </label>
+                <select
+                  value={customerData.tipoDocumento}
+                  onChange={(e) => setCustomerData({ ...customerData, tipoDocumento: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                >
+                  <option value="consumidor">Factura Consumidor Final</option>
+                  <option value="credito">Crédito Fiscal</option>
+                </select>
+              </div>
+
+              {/* Nombre */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Nombre Completo *
@@ -220,9 +249,10 @@ export const CashierDashboard: React.FC<CashierDashboardProps> = ({
                 />
               </div>
 
+              {/* NIT / DUI */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  NIT/DUI *
+                  NIT / DUI *
                 </label>
                 <input
                   type="text"
@@ -233,6 +263,51 @@ export const CashierDashboard: React.FC<CashierDashboardProps> = ({
                 />
               </div>
 
+              {/* NRC solo si crédito fiscal */}
+              {customerData.tipoDocumento === 'credito' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    NRC (Solo crédito fiscal)
+                  </label>
+                  <input
+                    type="text"
+                    value={customerData.nrc}
+                    onChange={(e) => setCustomerData({ ...customerData, nrc: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    placeholder="123456-7"
+                  />
+                </div>
+              )}
+
+              {/* Dirección */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Dirección *
+                </label>
+                <input
+                  type="text"
+                  value={customerData.direccion}
+                  onChange={(e) => setCustomerData({ ...customerData, direccion: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  placeholder="Col. Escalón, San Salvador"
+                />
+              </div>
+
+              {/* Teléfono */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Teléfono
+                </label>
+                <input
+                  type="text"
+                  value={customerData.telefono}
+                  onChange={(e) => setCustomerData({ ...customerData, telefono: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  placeholder="7777-8888"
+                />
+              </div>
+
+              {/* Correo */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Correo Electrónico *
@@ -242,7 +317,7 @@ export const CashierDashboard: React.FC<CashierDashboardProps> = ({
                   value={customerData.email}
                   onChange={(e) => setCustomerData({ ...customerData, email: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  placeholder="juan@ejemplo.com"
+                  placeholder="cliente@ejemplo.com"
                 />
               </div>
             </div>
@@ -282,27 +357,18 @@ export const CashierDashboard: React.FC<CashierDashboardProps> = ({
 
             <button
               onClick={handleProcessSale}
-              disabled={cartItems.length === 0 || !customerData.name || !customerData.nit || !customerData.email}
+              disabled={
+                cartItems.length === 0 || 
+                !customerData.name || 
+                !customerData.nit || 
+                !customerData.email || 
+                !customerData.direccion
+              }
               className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold flex items-center justify-center space-x-2"
             >
               <FileText className="h-4 w-4" />
               <span>Procesar Venta</span>
             </button>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumen del Día</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Productos en carrito:</span>
-                <span className="font-semibold">{cartItems.reduce((sum, item) => sum + item.quantity, 0)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Total actual:</span>
-                <span className="font-semibold text-green-600">${total.toFixed(2)}</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>

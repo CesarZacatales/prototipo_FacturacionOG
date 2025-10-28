@@ -1,6 +1,7 @@
 import React from 'react';
-import { Download, FileText, CheckCircle, ArrowLeft, Building, QrCode } from 'lucide-react';
+import { Download, CheckCircle, ArrowLeft, QrCode } from 'lucide-react';
 import { Invoice } from '../types';
+
 
 interface ElectronicInvoiceProps {
   invoice: Invoice;
@@ -12,7 +13,6 @@ interface ElectronicInvoiceProps {
 
 export const ElectronicInvoice: React.FC<ElectronicInvoiceProps> = ({
   invoice,
-  onBack,
   onDownloadPDF,
   onDownloadXML,
   onDownloadDTEJSON,
@@ -23,15 +23,6 @@ export const ElectronicInvoice: React.FC<ElectronicInvoiceProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center mb-6">
-        <button
-          onClick={onBack}
-          className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-        <h2 className="text-2xl font-bold text-gray-900">Documento Tributario Electrónico</h2>
-      </div>
 
       {/* Success Message */}
       <div className="bg-green-50 border-l-4 border-green-400 p-6 mb-6 rounded-lg">
